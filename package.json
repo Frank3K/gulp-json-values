@@ -1,0 +1,20 @@
+{
+  "name": "gulp-json-values",
+  "version": "0.0.1",
+  "description": "Extracts values from JSON file.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "JSON",
+    "angular-translate",
+    "locale"
+  ],
+  "author": "Frank3K",
+  "license": "MIT",
+  "devDependencies": {
+    "gulp-util": "^3.0.7",
+    "through2": "^2.0.1"
+  }
+}
