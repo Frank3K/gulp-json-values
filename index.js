@@ -4,29 +4,35 @@
 
 let PluginError = require('gulp-util').PluginError;
 let through = require('through2');
+let cheerio = require('cheerio');
 
 // consts
 let PLUGIN_NAME = 'gulp-json-values';
 
-function getJsonValues(object, prefix, map) {
+function getJsonValues(object, prefix, map, stripHtml) {
 	let values = Object.keys(object).map(function(key) {
 		let value = object[key];
 		let path = prefix ? prefix + '.' + key : key;
 		if (typeof value === 'string') {
+			if (stripHtml) {
+				let html = cheerio('<div>' + value + '</div>');
+				value = html.text();
+			}
+
 			// String value
 			map.set(path, value);
 		} else if (value) {
 			// Object
-			getJsonValues(value, path, map);
+			getJsonValues(value, path, map, stripHtml);
 		}
 	});
 }
 
-function getJsonValuesFromFile(fileBuffer, encoding) {
+function getJsonValuesFromFile(fileBuffer, encoding, stripHtml) {
 	let fileContent = fileBuffer.contents.toString(encoding);
 	let map = new Map();
 	let object = JSON.parse(fileContent);
-	getJsonValues(object, '', map);
+	getJsonValues(object, '', map, stripHtml);
 	return map;
 }
 
@@ -48,7 +54,7 @@ module.exports = function() {
 			this.emit('error', new PluginError(PLUGIN_NAME, 'Streams not supported!'));
 		} else if (file.isBuffer()) {
 			// Get key value map
-			map = getJsonValuesFromFile(file, encoding);
+			map = getJsonValuesFromFile(file, encoding, true);
 
 			// Write contents
 			file.contents = stringifyMapValues(map);
