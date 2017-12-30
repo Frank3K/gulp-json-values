@@ -2,7 +2,7 @@
 /* jshint esnext: true */
 'use strict';
 
-let PluginError = require('gulp-util').PluginError;
+let PluginError = require('plugin-error');
 let through = require('through2');
 let cheerio = require('cheerio');
 
